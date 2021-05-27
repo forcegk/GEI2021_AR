@@ -1,0 +1,248 @@
+*** AL-SWx - VLAN Conf
+ena
+conf t
+vlan 10
+name BLUE
+vlan 20
+name RED
+vlan 30
+name GREEN
+vlan 40
+name YELLOW
+end
+disa
+
+
+*** AL-SWx - Interface to VLAN Mapping
+ena
+conf t
+int range fa0/1 - 6
+switchport mode access
+switchport access vlan 10
+int range fa0/7 - 12
+switchport mode access
+switchport access vlan 20
+int range fa0/13 - 18
+switchport mode access
+switchport access vlan 30
+int range fa0/19 - 24
+switchport mode access
+switchport access vlan 40
+end
+disa
+
+
+*** AL-SWx - Trunk and portfast
+ena
+conf t
+interface g0/1
+!switchport trunk encapsulation dot1q
+switchport mode trunk
+interface g0/2
+!switchport trunk encapsulation dot1q
+switchport mode trunk
+end
+conf t
+span portfast default
+end
+disa
+
+
+*** DL-SWx - VLAN Conf
+ena
+conf t
+vlan 10
+name BLUE
+vlan 20
+name RED
+vlan 30
+name GREEN
+vlan 40
+name YELLOW
+end
+disa
+
+
+*** DL-SWx - Trunk
+ena
+conf t
+interface g1/0/1
+switchport trunk encapsulation dot1q
+switchport mode trunk
+interface g1/0/2
+switchport trunk encapsulation dot1q
+switchport mode trunk
+interface g1/0/3
+switchport trunk encapsulation dot1q
+switchport mode trunk
+end
+disa
+
+
+*** DL-SW1 - SVI
+ena
+conf t
+int vlan 10
+ip addr 10.1.1.253 255.255.255.0
+no shut
+int vlan 20
+ip addr 10.1.2.253 255.255.255.0
+no shut
+int vlan 30
+ip addr 10.1.3.253 255.255.255.0
+no shut
+int vlan 40
+ip addr 10.1.4.253 255.255.255.0
+no shut
+end
+disa
+
+
+*** DL-SW2 - SVI
+ena
+conf t
+int vlan 10
+ip addr 10.1.1.254 255.255.255.0
+no shut
+int vlan 20
+ip addr 10.1.2.254 255.255.255.0
+no shut
+int vlan 30
+ip addr 10.1.3.254 255.255.255.0
+no shut
+int vlan 40
+ip addr 10.1.4.254 255.255.255.0
+no shut
+end
+disa
+
+
+*** DL-SW1 - Routed Interfaces
+ena
+conf t
+int g1/0/4
+no switchport
+ip addr 10.0.13.3 255.255.255.0
+int g1/0/5
+no switchport
+ip addr 10.0.23.3 255.255.255.0
+end
+disa
+
+
+*** DL-SW2 - Routed Interfaces
+ena
+conf t
+int g1/0/4
+no switchport
+ip addr 10.0.14.4 255.255.255.0
+int g1/0/5
+no switchport
+ip addr 10.0.24.4 255.255.255.0
+end
+disa
+
+
+*** DL-SWx - Enable Routing (RIP)
+ena
+conf t
+ip routing
+rou rip
+v 2
+net 10.0.0.0
+pas vlan 10
+pas vlan 20
+pas vlan 30
+pas vlan 40
+end
+disa
+
+
+*** DL-SW1 - STP
+ena
+conf t
+span vlan 10 prio 4096
+span vlan 20 prio 4096
+span vlan 30 prio 8192
+span vlan 40 prio 8192
+end
+disa
+
+
+*** DL-SW2 - STP
+ena
+conf t
+span vlan 10 prio 8192
+span vlan 20 prio 8192
+span vlan 30 prio 4096
+span vlan 40 prio 4096
+end
+disa
+
+
+*** DL-SW1 - HSRP
+ena
+conf t
+int vlan 10
+standby  10 ip 10.1.1.1
+standby  10 preempt
+standby  10 prio 105
+standby  10 track g1/0/4
+standby  10 track g1/0/5
+int vlan 20
+standby  20 ip 10.1.2.1
+standby  20 preempt
+standby  20 prio 105
+standby  20 track g1/0/4
+standby  20 track g1/0/5
+int vlan 30
+standby  30 ip 10.1.3.1
+standby  30 preempt
+standby  30 prio 100
+standby  30 track g1/0/4
+standby  30 track g1/0/5
+int vlan 40
+standby  40 ip 10.1.4.1
+standby  40 preempt
+standby  40 prio 100
+standby  40 track g1/0/4
+standby  40 track g1/0/5
+end
+disa
+
+
+*** DL-SW2 - HSRP
+ena
+conf t
+int vlan 10
+standby  10 ip 10.1.1.1
+standby  10 preempt
+standby  10 prio 100
+standby  10 track g1/0/4
+standby  10 track g1/0/5
+int vlan 20
+standby  20 ip 10.1.2.1
+standby  20 preempt
+standby  20 prio 100
+standby  20 track g1/0/4
+standby  20 track g1/0/5
+int vlan 30
+standby  30 ip 10.1.3.1
+standby  30 preempt
+standby  30 prio 105
+standby  30 track g1/0/4
+standby  30 track g1/0/5
+int vlan 40
+standby  40 ip 10.1.4.1
+standby  40 preempt
+standby  40 prio 105
+standby  40 track g1/0/4
+standby  40 track g1/0/5
+end
+disa
+
+
+*** Save running-config
+ena
+wr
+reload

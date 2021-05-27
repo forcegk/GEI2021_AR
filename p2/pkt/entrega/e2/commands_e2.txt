@@ -1,0 +1,91 @@
+PCs VLAN 3 - IP
+IP -> 192.168.49.x/24
+
+*** DL-SW1 - STP
+ena
+conf t
+span vlan 30 prio 4096
+end
+disa
+
+*** DL-SW2 - STP
+ena
+conf t
+span vlan 30 prio 8192
+end
+disa
+
+*** DL-SW1 - SVI
+ena
+conf t
+int vlan 30
+ip addr 192.168.49.253 255.255.255.0
+no shut
+end
+disa
+
+
+*** DL-SW2 - SVI
+ena
+conf t
+int vlan 30
+ip addr 192.168.49.254 255.255.255.0
+no shut
+end
+disa
+
+
+*** DL-SW1 - HSRP
+ena
+conf t
+int vlan 30
+no standby 30
+standby  30 ip 192.168.49.1
+standby  30 preempt
+standby  30 prio 105
+standby  30 track g1/0/4
+standby  30 track g1/0/5
+end
+disa
+
+
+*** DL-SW2 - HSRP
+ena
+conf t
+int vlan 30
+no standby 30
+standby  30 ip 192.168.49.1
+standby  30 preempt
+standby  30 prio 100
+standby  30 track g1/0/4
+standby  30 track g1/0/5
+end
+disa
+
+
+*** DL-SWx - Enable OSPF (OSPF)
+ena
+conf t
+ip routing
+no rou rip
+rou ospf 1
+net 10.0.0.0      0.255.255.255 area 0
+net 192.168.49.0  0.0.0.255 area 0
+pas vlan 10
+pas vlan 20
+pas vlan 30
+pas vlan 40
+end
+disa
+
+
+*** CORE-SWx - Enable OSPF (OSPF)
+ena
+conf t
+ip routing
+no rou rip
+rou ospf 1
+net 10.0.0.0      0.255.255.255 area 0
+end
+disa
+

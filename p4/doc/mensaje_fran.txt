@@ -1,0 +1,57 @@
+[5/5 16:30] Francisco Javier Nóvoa ManuelIncidencias con la configuración de AAA en los switches de la Práctica 4
+    
+Hola curso2020-21.AR.614G01048,
+
+Os envío este mensaje para comentaros un par de cuestiones relacionadas con el escenario de la práctica 4 de AR.
+
+La primera hace referencia a los switches de la capa de acceso (AL-SWs). Por alguna razón, en las versiones recientes de Packet Tracer los switches del modelo Cisco Catalyst 2960 traen instalada una versión de sistema operativo antigua y básica (c2960-lanbase-mz.122-25.FX.bin) que no soporta AAA. Para solventar este problema, lo único que hay que hacer es actualizar la versión del sistema operativo de dichos switches, ejecutando los siguientes comandos:
+
+
+
+AL-SW-#copy tftp flash:
+Address or name of remote host []? 172.16.100.100
+Source filename []? c2960-lanbasek9-mz.150-2.SE4.bin
+Destination filename [c2960-lanbasek9-mz.150-2.SE4.bin]?  
+Accessing tftp://172.16.100.100/c2960-lanbasek9-mz.150-2.SE4.bin....
+Loading c2960-lanbasek9-mz.150-2.SE4.bin from 172.16.100.100: !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+[OK - 4670455 bytes]
+
+
+
+4670455 bytes copied in 3.798 secs (98864 bytes/sec)
+
+
+AL-SW-#delete c2960-lanbase-mz.122-25.FX.bin
+Delete filename [c2960-lanbase-mz.122-25.FX.bin]?
+Delete flash:/c2960-lanbase-mz.122-25.FX.bin? [confirm]
+
+
+AL-SW-DC1#wr
+[OK]
+AL-SW-DC1#reload
+
+
+ 
+La segunda cuestión hace referencia a los switches de distribución y de core. En este caso he incluido los switches más avanzados que nos permite Packet Tracer pero en su implementación no se soporta el protocolo de autenticación RADIUS. En su lugar soporta el protocolo TACACS (que se propietario de Cisco). A nivel de configuración esto afecta muy poco y lo único que hay que hacer "traducir" los comandos de RADIUS a TACACS e indicar en el servidor AAA que los clientes son de tipo TACACS en lugar de tipo RADIUS.
+
+La equivalencia de comandos es bastante directa:
+
+
+
+radius-server host --> tacacs-server host
+radius-key         --> tacacs-server key
+
+
+
+
+El resto de las configuraciones no varían.
+
+
+Para cualquier cuestión adicional que podáis tener, no dudéis en contactar conmigo.
+
+
+Disculpad las molestias ocasionadas.
+
+Un saludo,
+
+Fran

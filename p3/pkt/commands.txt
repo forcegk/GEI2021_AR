@@ -1,0 +1,517 @@
+*** DL-SW11 - ACL
+ena
+conf t
+
+!! ACL Para VLAN 10 y 30
+ip access-list extended VLAN10-VLAN30-IN-DLSW11
+! OSPF
+permit ospf 10.1.1.254 0.0.2.0 host 10.1.1.253
+permit ospf 10.1.1.254 0.0.2.0 host 10.1.3.253
+permit ospf 10.1.1.254 0.0.2.0 host 224.0.0.5
+permit ospf 10.1.1.254 0.0.2.0 host 224.0.0.6
+! HSRP (v1)
+permit ip 10.1.1.254 0.0.2.0 host 224.0.0.2
+! HTTP, HTTPS a 10.255.1.0
+permit tcp 10.1.1.0 0.0.2.255 10.255.1.0 0.0.0.255 eq 80
+permit tcp 10.1.1.0 0.0.2.255 10.255.1.0 0.0.0.255 eq 443
+permit udp 10.1.1.0 0.0.2.255 host 10.255.1.10 eq 53
+deny ip 10.1.1.0 0.0.2.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.1.1.0 0.0.2.255 any eq 443
+permit icmp 10.1.1.0 0.0.2.255 any
+
+!! ACL Para VLAN 20 y 40
+ip access-list extended VLAN20-VLAN40-IN-DLSW11
+! Denegamos IP de redes que no tenemos
+deny ip 10.1.0.0 0.0.0.255 any
+deny ip 10.1.6.0 0.0.0.255 any
+! OSPF
+permit ospf 10.1.0.254 0.0.6.0 host 10.1.2.253
+permit ospf 10.1.0.254 0.0.6.0 host 10.1.4.253
+permit ospf 10.1.0.254 0.0.6.0 host 224.0.0.5
+permit ospf 10.1.0.254 0.0.6.0 host 224.0.0.6
+! HSRP (v1)
+permit ip 10.1.0.254 0.0.6.0 host 224.0.0.2
+! HTTP, HTTPS a 10.255.2.0
+permit tcp 10.1.0.0 0.0.6.255 10.255.2.0 0.0.0.255 eq 80
+permit tcp 10.1.0.0 0.0.6.255 10.255.2.0 0.0.0.255 eq 443
+permit tcp 10.1.0.0 0.0.6.255 host 10.255.2.10 eq 25
+permit tcp 10.1.0.0 0.0.6.255 host 10.255.2.10 eq 110
+permit udp 10.1.0.0 0.0.6.255 host 10.255.2.10 eq 53
+deny ip 10.1.0.0 0.0.6.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.1.0.0 0.0.6.255 any eq 443
+permit icmp 10.1.0.0 0.0.6.255 any
+
+int vlan10
+ip access-group VLAN10-VLAN30-IN-DLSW11 in
+
+int vlan30
+ip access-group VLAN10-VLAN30-IN-DLSW11 in
+
+int vlan20
+ip access-group VLAN20-VLAN40-IN-DLSW11 in
+
+int vlan40
+ip access-group VLAN20-VLAN40-IN-DLSW11 in
+end
+disa
+
+
+
+*** DL-SW12 - ACL
+ena
+conf t
+
+!! ACL Para VLAN 10 y 30
+ip access-list extended VLAN10-VLAN30-IN-DLSW12
+! OSPF
+permit ospf 10.1.1.253 0.0.2.0 host 10.1.1.254
+permit ospf 10.1.1.253 0.0.2.0 host 10.1.3.254
+permit ospf 10.1.1.253 0.0.2.0 host 224.0.0.5
+permit ospf 10.1.1.253 0.0.2.0 host 224.0.0.6
+! HSRP (v1)
+permit ip 10.1.1.253 0.0.2.0 host 224.0.0.2
+! HTTP, HTTPS a 10.255.1.0
+permit tcp 10.1.1.0 0.0.2.255 10.255.1.0 0.0.0.255 eq 80
+permit tcp 10.1.1.0 0.0.2.255 10.255.1.0 0.0.0.255 eq 443
+permit udp 10.1.1.0 0.0.2.255 host 10.255.1.10 eq 53
+deny ip 10.1.1.0 0.0.2.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.1.1.0 0.0.2.255 any eq 443
+permit icmp 10.1.1.0 0.0.2.255 any
+
+!! ACL Para VLAN 20 y 40
+ip access-list extended VLAN20-VLAN40-IN-DLSW12
+! Denegamos IP de redes que no tenemos
+deny ip 10.1.0.0 0.0.0.255 any
+deny ip 10.1.6.0 0.0.0.255 any
+! OSPF
+permit ospf 10.1.0.253 0.0.6.0 host 10.1.2.254
+permit ospf 10.1.0.253 0.0.6.0 host 10.1.4.254
+permit ospf 10.1.0.253 0.0.6.0 host 224.0.0.5
+permit ospf 10.1.0.253 0.0.6.0 host 224.0.0.6
+! HSRP (v1)
+permit ip 10.1.0.253 0.0.6.0 host 224.0.0.2
+! HTTP, HTTPS a 10.255.2.0
+permit tcp 10.1.0.0 0.0.6.255 10.255.2.0 0.0.0.255 eq 80
+permit tcp 10.1.0.0 0.0.6.255 10.255.2.0 0.0.0.255 eq 443
+permit tcp 10.1.0.0 0.0.6.255 host 10.255.2.10 eq 25
+permit tcp 10.1.0.0 0.0.6.255 host 10.255.2.10 eq 110
+permit udp 10.1.0.0 0.0.6.255 host 10.255.2.10 eq 53
+deny ip 10.1.0.0 0.0.6.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.1.0.0 0.0.6.255 any eq 443
+permit icmp 10.1.0.0 0.0.6.255 any
+
+int vlan10
+ip access-group VLAN10-VLAN30-IN-DLSW12 in
+
+int vlan30
+ip access-group VLAN10-VLAN30-IN-DLSW12 in
+
+int vlan20
+ip access-group VLAN20-VLAN40-IN-DLSW12 in
+
+int vlan40
+ip access-group VLAN20-VLAN40-IN-DLSW12 in
+end
+disa
+
+
+
+*** DL-SW21 - ACL
+ena
+conf t
+
+!! ACL Para VLAN 10 y 30
+ip access-list extended VLAN10-VLAN30-IN-DLSW21
+! OSPF
+permit ospf 10.2.1.254 0.0.2.0 host 10.2.1.253
+permit ospf 10.2.1.254 0.0.2.0 host 10.2.3.253
+permit ospf 10.2.1.254 0.0.2.0 host 224.0.0.5
+permit ospf 10.2.1.254 0.0.2.0 host 224.0.0.6
+! HSRP (v1)
+permit ip 10.2.1.254 0.0.2.0 host 224.0.0.2
+! HTTP, HTTPS a 10.255.1.0
+permit tcp 10.2.1.0 0.0.2.255 10.255.1.0 0.0.0.255 eq 80
+permit tcp 10.2.1.0 0.0.2.255 10.255.1.0 0.0.0.255 eq 443
+permit udp 10.2.1.0 0.0.2.255 host 10.255.1.10 eq 53
+deny ip 10.2.1.0 0.0.2.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.2.1.0 0.0.2.255 any eq 443
+permit icmp 10.2.1.0 0.0.2.255 any
+
+!! ACL Para VLAN 20 y 40
+ip access-list extended VLAN20-VLAN40-IN-DLSW21
+! Denegamos IP de redes que no tenemos
+deny ip 10.2.0.0 0.0.0.255 any
+deny ip 10.2.6.0 0.0.0.255 any
+! OSPF
+permit ospf 10.2.0.254 0.0.6.0 host 10.2.2.253
+permit ospf 10.2.0.254 0.0.6.0 host 10.2.4.253
+permit ospf 10.2.0.254 0.0.6.0 host 224.0.0.5
+permit ospf 10.2.0.254 0.0.6.0 host 224.0.0.6
+! HSRP (v1)
+permit ip 10.2.0.254 0.0.6.0 host 224.0.0.2
+! HTTP, HTTPS a 10.255.2.0
+permit tcp 10.2.0.0 0.0.6.255 10.255.2.0 0.0.0.255 eq 80
+permit tcp 10.2.0.0 0.0.6.255 10.255.2.0 0.0.0.255 eq 443
+permit tcp 10.2.0.0 0.0.6.255 host 10.255.2.10 eq 25
+permit tcp 10.2.0.0 0.0.6.255 host 10.255.2.10 eq 110
+permit udp 10.2.0.0 0.0.6.255 host 10.255.2.10 eq 53
+deny ip 10.2.0.0 0.0.6.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.2.0.0 0.0.6.255 any eq 443
+permit icmp 10.2.0.0 0.0.6.255 any
+
+int vlan10
+ip access-group VLAN10-VLAN30-IN-DLSW21 in
+
+int vlan30
+ip access-group VLAN10-VLAN30-IN-DLSW21 in
+
+int vlan20
+ip access-group VLAN20-VLAN40-IN-DLSW21 in
+
+int vlan40
+ip access-group VLAN20-VLAN40-IN-DLSW21 in
+end
+disa
+
+
+
+*** DL-SW22 - ACL
+ena
+conf t
+
+!! ACL Para VLAN 10 y 30
+ip access-list extended VLAN10-VLAN30-IN-DLSW22
+! OSPF
+permit ospf 10.2.1.253 0.0.2.0 host 10.2.1.254
+permit ospf 10.2.1.253 0.0.2.0 host 10.2.3.254
+permit ospf 10.2.1.253 0.0.2.0 host 224.0.0.5
+permit ospf 10.2.1.253 0.0.2.0 host 224.0.0.6
+! HSRP (v1)
+permit ip 10.2.1.253 0.0.2.0 host 224.0.0.2
+! HTTP, HTTPS a 10.255.1.0
+permit tcp 10.2.1.0 0.0.2.255 10.255.1.0 0.0.0.255 eq 80
+permit tcp 10.2.1.0 0.0.2.255 10.255.1.0 0.0.0.255 eq 443
+permit udp 10.2.1.0 0.0.2.255 host 10.255.1.10 eq 53
+deny ip 10.2.1.0 0.0.2.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.2.1.0 0.0.2.255 any eq 443
+permit icmp 10.2.1.0 0.0.2.255 any
+
+!! ACL Para VLAN 20 y 40
+ip access-list extended VLAN20-VLAN40-IN-DLSW22
+! Denegamos IP de redes que no tenemos
+deny ip 10.2.0.0 0.0.0.255 any
+deny ip 10.2.6.0 0.0.0.255 any
+! OSPF
+permit ospf 10.2.0.253 0.0.6.0 host 10.2.2.254
+permit ospf 10.2.0.253 0.0.6.0 host 10.2.4.254
+permit ospf 10.2.0.253 0.0.6.0 host 224.0.0.5
+permit ospf 10.2.0.253 0.0.6.0 host 224.0.0.6
+! HSRP (v1)
+permit ip 10.2.0.253 0.0.6.0 host 224.0.0.2
+! HTTP, HTTPS a 10.255.2.0
+permit tcp 10.2.0.0 0.0.6.255 10.255.2.0 0.0.0.255 eq 80
+permit tcp 10.2.0.0 0.0.6.255 10.255.2.0 0.0.0.255 eq 443
+permit tcp 10.2.0.0 0.0.6.255 host 10.255.2.10 eq 25
+permit tcp 10.2.0.0 0.0.6.255 host 10.255.2.10 eq 110
+permit udp 10.2.0.0 0.0.6.255 host 10.255.2.10 eq 53
+deny ip 10.2.0.0 0.0.6.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.2.0.0 0.0.6.255 any eq 443
+permit icmp 10.2.0.0 0.0.6.255 any
+
+int vlan10
+ip access-group VLAN10-VLAN30-IN-DLSW22 in
+
+int vlan30
+ip access-group VLAN10-VLAN30-IN-DLSW22 in
+
+int vlan20
+ip access-group VLAN20-VLAN40-IN-DLSW22 in
+
+int vlan40
+ip access-group VLAN20-VLAN40-IN-DLSW22 in
+end
+disa
+
+
+
+*** DL-SWDC1 - ACL
+ena
+conf t
+
+!! ACL Para VLAN 10
+ip access-list extended VLAN10-IN-DLSWDC1
+! OSPF
+permit ospf host 10.255.1.254 host 10.255.1.253
+permit ospf host 10.255.1.254 host 224.0.0.5
+permit ospf host 10.255.1.254 host 224.0.0.6
+! HSRP (v1)
+permit ip host 10.255.1.254 host 224.0.0.2
+! Denegamos IP de redes que no tenemos
+!   punto 0
+deny ip any 10.1.0.0 0.0.0.255
+deny ip any 10.2.0.0 0.0.0.255
+!   punto 5
+deny ip any 10.1.5.0 0.0.0.255
+deny ip any 10.2.5.0 0.0.0.255
+!   punto 6 y 7
+deny ip any 10.1.6.0 0.0.1.255
+deny ip any 10.2.6.0 0.0.1.255
+! HTTP, HTTPS, DNS de respuesta
+!  para 10.1.1-4.x
+permit tcp 10.255.1.0 0.0.0.255 eq 80  10.1.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.1.0 0.0.0.255 eq 443 10.1.0.0 0.0.7.255 gt 1023 established
+permit udp 10.255.1.0 0.0.0.255 eq 53  10.1.0.0 0.0.7.255 gt 1023
+!  para 10.2.1-4.x
+permit tcp 10.255.1.0 0.0.0.255 eq 80  10.2.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.1.0 0.0.0.255 eq 443 10.2.0.0 0.0.7.255 gt 1023 established
+permit udp 10.255.1.0 0.0.0.255 eq 53  10.2.0.0 0.0.7.255 gt 1023
+deny ip 10.255.1.0 0.0.0.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.255.1.0 0.0.0.255 any eq 443
+permit tcp  10.255.1.0 0.0.0.255 eq 443 any gt 1023 established
+permit icmp 10.255.1.0 0.0.0.255 any
+
+!! ACL Para VLAN 20
+ip access-list extended VLAN20-IN-DLSWDC1
+! OSPF
+permit ospf host 10.255.2.254 host 10.255.1.253
+permit ospf host 10.255.2.254 host 224.0.0.5
+permit ospf host 10.255.2.254 host 224.0.0.6
+! HSRP (v1)
+permit ip host 10.255.2.254 host 224.0.0.2
+! Denegamos IP de redes que no tenemos
+!   punto 0
+deny ip any 10.1.0.0 0.0.0.255
+deny ip any 10.2.0.0 0.0.0.255
+!   punto 5
+deny ip any 10.1.5.0 0.0.0.255
+deny ip any 10.2.5.0 0.0.0.255
+!   punto 6 y 7
+deny ip any 10.1.6.0 0.0.1.255
+deny ip any 10.2.6.0 0.0.1.255
+! HTTP, HTTPS, DNS de respuesta
+!  para 10.1.1-4.x
+permit tcp 10.255.2.0 0.0.0.255 eq 80  10.1.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 443 10.1.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 25  10.1.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 110 10.1.0.0 0.0.7.255 gt 1023 established
+permit udp 10.255.2.0 0.0.0.255 eq 53  10.1.0.0 0.0.7.255 gt 1023
+!  para 10.2.1-4.x
+permit tcp 10.255.2.0 0.0.0.255 eq 80  10.2.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 443 10.2.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 25  10.2.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 110 10.2.0.0 0.0.7.255 gt 1023 established
+permit udp 10.255.2.0 0.0.0.255 eq 53  10.2.0.0 0.0.7.255 gt 1023
+deny ip 10.255.2.0 0.0.0.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.255.2.0 0.0.0.255 any eq 443
+permit tcp  10.255.2.0 0.0.0.255 eq 443 any gt 1023 established
+permit icmp 10.255.2.0 0.0.0.255 any
+
+!! ACL Para VLAN 30 y 40 (que no se usan)
+ip access-list extended VLAN30-VLAN40-IN-DLSWDC1
+! no ponemos nada, para que se deniegue todo
+
+int vlan10
+ip access-group VLAN10-IN-DLSWDC1 in
+
+int vlan20
+ip access-group VLAN20-IN-DLSWDC1 in
+
+int vlan30
+ip access-group VLAN30-VLAN40-IN-DLSWDC1 in
+
+int vlan40
+ip access-group VLAN30-VLAN40-IN-DLSWDC1 in
+
+end
+disa
+
+
+
+*** DL-SWDC2 - ACL
+ena
+conf t
+
+!! ACL Para VLAN 10
+ip access-list extended VLAN10-IN-DLSWDC2
+! OSPF
+permit ospf host 10.255.1.253 host 10.255.1.254
+permit ospf host 10.255.1.253 host 224.0.0.5
+permit ospf host 10.255.1.253 host 224.0.0.6
+! HSRP (v1)
+permit ip host 10.255.1.253 host 224.0.0.2
+! Denegamos IP de redes que no tenemos
+!   punto 0
+deny ip any 10.1.0.0 0.0.0.255
+deny ip any 10.2.0.0 0.0.0.255
+!   punto 5
+deny ip any 10.1.5.0 0.0.0.255
+deny ip any 10.2.5.0 0.0.0.255
+!   punto 6 y 7
+deny ip any 10.1.6.0 0.0.1.255
+deny ip any 10.2.6.0 0.0.1.255
+! HTTP, HTTPS, DNS de respuesta
+!  para 10.1.1-4.x
+permit tcp 10.255.1.0 0.0.0.255 eq 80  10.1.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.1.0 0.0.0.255 eq 443 10.1.0.0 0.0.7.255 gt 1023 established
+permit udp 10.255.1.0 0.0.0.255 eq 53  10.1.0.0 0.0.7.255 gt 1023
+!  para 10.2.1-4.x
+permit tcp 10.255.1.0 0.0.0.255 eq 80  10.2.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.1.0 0.0.0.255 eq 443 10.2.0.0 0.0.7.255 gt 1023 established
+permit udp 10.255.1.0 0.0.0.255 eq 53  10.2.0.0 0.0.7.255 gt 1023
+deny ip 10.255.1.0 0.0.0.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.255.1.0 0.0.0.255 any eq 443
+permit tcp  10.255.1.0 0.0.0.255 eq 443 any gt 1023 established
+permit icmp 10.255.1.0 0.0.0.255 any
+
+!! ACL Para VLAN 20
+ip access-list extended VLAN20-IN-DLSWDC2
+! OSPF
+permit ospf host 10.255.2.253 host 10.255.1.254
+permit ospf host 10.255.2.253 host 224.0.0.5
+permit ospf host 10.255.2.253 host 224.0.0.6
+! HSRP (v1)
+permit ip host 10.255.2.253 host 224.0.0.2
+! Denegamos IP de redes que no tenemos
+!   punto 0
+deny ip any 10.1.0.0 0.0.0.255
+deny ip any 10.2.0.0 0.0.0.255
+!   punto 5
+deny ip any 10.1.5.0 0.0.0.255
+deny ip any 10.2.5.0 0.0.0.255
+!   punto 6 y 7
+deny ip any 10.1.6.0 0.0.1.255
+deny ip any 10.2.6.0 0.0.1.255
+! HTTP, HTTPS, DNS de respuesta
+!  para 10.1.1-4.x
+permit tcp 10.255.2.0 0.0.0.255 eq 80  10.1.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 443 10.1.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 25  10.2.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 110 10.2.0.0 0.0.7.255 gt 1023 established
+permit udp 10.255.2.0 0.0.0.255 eq 53  10.1.0.0 0.0.7.255 gt 1023
+!  para 10.2.1-4.x
+permit tcp 10.255.2.0 0.0.0.255 eq 80  10.2.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 443 10.2.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 25  10.2.0.0 0.0.7.255 gt 1023 established
+permit tcp 10.255.2.0 0.0.0.255 eq 110 10.2.0.0 0.0.7.255 gt 1023 established
+permit udp 10.255.2.0 0.0.0.255 eq 53  10.2.0.0 0.0.7.255 gt 1023
+deny ip 10.255.2.0 0.0.0.255 10.0.0.0 0.255.255.255
+! HTTPS, ICMP a Internet
+permit tcp  10.255.2.0 0.0.0.255 any eq 443
+permit tcp  10.255.2.0 0.0.0.255 eq 443 any gt 1023 established
+permit icmp 10.255.2.0 0.0.0.255 any
+
+!! ACL Para VLAN 30 y 40 (que no se usan)
+ip access-list extended VLAN30-VLAN40-IN-DLSWDC2
+! no ponemos nada, para que se deniegue todo
+
+int vlan10
+ip access-group VLAN10-IN-DLSWDC2 in
+
+int vlan20
+ip access-group VLAN20-IN-DLSWDC2 in
+
+int vlan30
+ip access-group VLAN30-VLAN40-IN-DLSWDC2 in
+
+int vlan40
+ip access-group VLAN30-VLAN40-IN-DLSWDC2 in
+
+end
+disa
+
+
+
+*** FW - ACL y NAT
+!!!! Primero tenemos que activar modo avanzado !!!!
+ena
+conf t
+license boot module c2900 technology-package securityk9
+wr
+reload
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+ena
+conf t
+
+! Mapeos de puertos
+ip nat inside source static tcp 10.255.1.10 443 192.0.0.13 443
+ip nat inside source static tcp 10.255.2.10 443 192.0.0.14 443
+
+! ACL Subred 10.1.x.x
+ip access-list standard dot1-FW
+permit 10.1.0.0 0.0.255.255
+! ACL Subred 10.2.x.x
+ip access-list standard dot2-FW
+permit 10.2.0.0 0.0.255.255
+! ACL Subred 10.3.x.x
+ip access-list standard dot3-FW
+permit 10.3.0.0 0.0.255.255
+
+! Pools de NAT
+ip nat pool dot10-POOL 192.0.0.10 192.0.0.10 netmask 255.255.255.255
+ip nat pool dot11-POOL 192.0.0.11 192.0.0.11 netmask 255.255.255.255
+ip nat pool dot12-POOL 192.0.0.12 192.0.0.12 netmask 255.255.255.255
+
+! Overload de NAT
+ip nat inside source list dot1-FW pool dot10-POOL overload
+ip nat inside source list dot2-FW pool dot11-POOL overload
+ip nat inside source list dot3-FW pool dot12-POOL overload
+
+
+! Creamos ACL para conexiones entrantes desde Frontera
+ip access-list extended G01-IN-FW
+permit tcp any gt 1023 host 192.0.0.13 eq 443
+permit tcp any gt 1023 host 192.0.0.14 eq 443
+
+! Es alta pereza configurar las de vuelta, así que usamos CBAC
+ip inspect name G00-G02-CBAC-IN-FW tcp
+ip inspect name G00-G02-CBAC-IN-FW icmp
+
+! Asignar inside y outside en las interfaces
+int g0/0
+ip nat inside
+ip inspect G00-G02-CBAC-IN-FW in
+
+int g0/2
+ip nat inside
+ip inspect G00-G02-CBAC-IN-FW in
+
+int g0/1
+ip nat outside
+ip access-group G01-IN-FW in
+
+end
+disa
+
+
+*** FRONTERA - ACL
+ena
+conf t
+
+! Filtrar IP Marcianas
+ip access-list standard S000-IN-FRONTERA
+deny 192.0.0.0  0.0.0.255
+deny 10.0.0.0   0.255.255.255
+permit 0.0.0.0  0.0.0.0
+deny 0.0.0.0    0.255.255.255
+deny 127.0.0.0  0.255.255.255
+deny 192.0.2.0  0.0.0.255
+deny 224.0.0.0  17.255.255.255
+permit any
+
+int s0/0/0
+ip access-group S000-IN-FRONTERA in
+
+end
+disa

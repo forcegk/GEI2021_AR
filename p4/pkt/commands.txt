@@ -1,0 +1,92 @@
+*** AL - Flashear
+ena
+copy tftp flash
+172.16.100.100
+c2960-lanbasek9-mz.150-2.SE4.bin
+delete c2960-lanbase-mz.122-25.FX.bin
+wr
+reload
+
+*** CREAR-USERS Y AAA TACACS (DL y Core)
+ena
+conf t
+ip access-list standard SOLO-GESTION
+permit 172.16.0.0 0.0.255.255
+end
+ena
+conf t
+enable secret Clase_123
+username adminlocal privilege 15 secret Cisco_123
+username userlocal secret Cisco_123
+aaa new-model
+tacacs-server host 172.16.100.100
+tacacs-server key sicomoro
+aaa authentication login default local
+aaa authentication login REMOTE-LOGIN group tacacs+ local
+line vty 0 15
+login authentication REMOTE-LOGIN
+access-class SOLO-GESTION in
+end
+disable
+
+*** CREAR-USERS Y AAA RADIUS
+ena
+conf t
+ip access-list standard SOLO-GESTION
+permit 172.16.0.0 0.0.255.255
+end
+ena
+conf t
+enable secret Clase_123
+username adminlocal privilege 15 secret Cisco_123
+username userlocal secret Cisco_123
+aaa new-model
+radius-server host 172.16.100.100 key sicomoro
+aaa authentication login default local
+aaa authentication login REMOTE-LOGIN group radius local
+line vty 0 15
+login authentication REMOTE-LOGIN
+access-class SOLO-GESTION in
+end
+disable
+
+
+*** HABILITAR SSH
+conf t
+ip domain-name ar.pri
+crypto key generate rsa general-keys modulus 2048
+ip ssh version 2
+line vty 0 15
+transport input ssh
+end
+wr
+reload
+
+
+*** HABILITAR RSYSLOG
+conf t
+service timestamps log datetime msec
+service timestamps deb datetime msec
+ntp server 172.16.100.100
+logging host 172.16.100.100
+logging trap debug
+logging on
+end
+wr
+reload
+
+*** HABILITAR SNMP SERVER
+conf t
+snmp-server community FWRO ro
+snmp-server community FWRW rw
+
+
+*** MISC COPYPASTE
+adminlocal
+Cisco_123
+
+ena
+Clase_123
+
+
+

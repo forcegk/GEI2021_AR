@@ -1,0 +1,61 @@
+Encontré un par de maneras sencillas (y eficaces) de aumentar la seguridad de las
+actualizaciones RIP.
+
+La primera que pensé y encontré, fue restringir las IPs desde las que se atienden 
+actualizaciones RIP. (trusted-gateways)
+
+Esto se puede realizar de forma muy sencilla como se muestra en el ejemplo 1: (1)
+
+Example 1
+The following example configures RIP to accept updates sent from routes with only host
+addresses of 2 on the 192.168.10, .12, and .13 networks.
+
+(config)# router rip
+(config-router-rip)# trusted-gateways 192.168.10.2
+(config-router-rip)# trusted-gateways 192.168.11.2
+(config-router-rip)# trusted-gateways 192.168.12.2
+(config-router-rip)# exit
+
+
+De todos modos, esto parece bastante inseguro, ya que no parece haber ninguna forma
+de evitar un spoofing de IP mediante este método, por lo que necesitamos algo más...
+
+Este algo es "ip rip authentication" (2)(3). También se configura de forma muy sencilla, y
+básicamente consiste en la autenticación por keys. Keys que los routers que emitan updates
+rip deberán proporcionar. Esta autenticación se puede realizar mediante dos métodos, 
+texto plano o MD5. Ambas son válidas.
+
+Nota: Esta autenticación solamente está disponible en RIP v2 (2)
+[Note: RIP version 1 (RIPv1) does not support authentication. If you are sending and receiving
+RIPv2 packets, you can enable RIP authentication on an interface.]
+
+Ejemplo 2
+Configuramos un key chain en el Router A
+key chain kal
+
+Añadimos un número de identificación a la key que vamos a agregar
+key 1
+
+Y agregamos la key
+key-string 234
+
+Añadimos las tres líneas en el Router B
+key chain kal
+key 1
+key-string 234
+
+
+Y en ambos activamos la autenticación con
+ip rip authentication key-chain kal
+
+
+Si quisiesemos activar la autenticación por md5, deberemos añadir la siguiente línea
+ip rip authentication mode md5
+
+
+
+--- FUENTES ---
+(1) trusted-gateways = https://sc1.checkpoint.com/documents/R76/CP_R76_SecurePlatform_AdvancedRouting_WebAdmin/51006.htm#o51047
+(2) ip rip authentication = https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13719-50.html#configuringplain
+(3) ip rip authentication = https://sc1.checkpoint.com/documents/R76/CP_R76_SecurePlatform_AdvancedRouting_WebAdmin/51006.htm#o51049
+---------------
